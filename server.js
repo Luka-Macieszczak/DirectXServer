@@ -78,6 +78,12 @@ io.on('connection', (socket) => {
             })
     })
 
+    /*
+    streamObj: {
+        socketID: socket id of streamer,
+        username: username of streamer
+    }
+    */
     socket.on(Constants.START_STREAM, (streamObj) => {
         streams.push(streamObj)
         console.log('Current streams: ', streams)
@@ -88,6 +94,36 @@ io.on('connection', (socket) => {
         console.log('Current streams: ', streams)
     })
 
+    /*
+    dataObj:{
+        streamerUsername: username of streamer,
+        socketID: username of viewer,
+        username: username of viewer
+    }
+    */
+    socket.on(Constants.JOIN_STREAM_REQUEST, (dataObj) => {
+        console.log('Join Stream Reauest: ', dataObj)
+        if(userIsStreaming(dataObj.streamerUsername))
+            socket.join(dataObj.streamerUsername)
+    })
+
+
+    /*
+    messageObj:{
+        message: text,
+        username: username of sender,
+        streamerUsername: username of streamer, used as roomname
+    }
+    */
+    socket.on(Constants.MESSAGE, (messageObj) => {
+        console.log('Message: ', messageObj)
+        // Send message to room belonging to streamer
+        socket.to(messageObj.streamerUsername).emit(Constants.MESSAGE, ({
+            username: messageObj.username,
+            message: messageObj.message
+        }))
+    })
+
 })
 
 const removeStream = (streamObj) => {
@@ -96,6 +132,13 @@ const removeStream = (streamObj) => {
             if(streams[i].socketID == streamObj.socketID) streams.pop(i);
         }
     }
+}
+
+const userIsStreaming = (username,) => {
+    for(let streamObj of streams) {
+        if(streamObj.username == username) return true
+    }
+    return false
 }
 
 httpServer.listen(Constants.PORT, () => {
