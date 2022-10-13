@@ -124,6 +124,46 @@ io.on('connection', (socket) => {
         }))
     })
 
+    /* 
+    dataObj:{
+        candidateObj:{
+            type: "candidate"
+            label: sdpMLineIndex,
+            id: sdpMid,
+            candidate: candidate,
+        },
+        toSocketID: socket ID of user that joined the stream
+    }
+    */
+    socket.on(Constants.CANDIDATE, (dataObj) => {
+        socket.to(dataObj.toSocketID).emit(Constants.CANDIDATE, dataObj.candidateObj)
+    })
+
+    /*
+    dataObj:{
+        type: offer,
+        sessionDescription: session description of the streamers peer,
+        toSocketID: socket ID of user that joined the stream,
+        ownSocketID: socket ID of self
+    }
+    */
+    socket.on(Constants.OFFER, (dataObj) => {
+        socket.to(dataObj.toSocketID).emit(Constants.OFFER, {sessionDescription: dataObj.sessionDescription,
+        toSocketID: dataObj.ownSocketID})
+    })
+
+    /*
+    dataObj:{
+        type: answer,
+        sessionDescription: session description of the streamers peer,
+        toSocketID: socket ID of user that joined the stream,
+        ownSocketID: socket ID of self
+    }
+    */
+    socket.on(Constants.ANSWER, (dataObj) => {
+        socket.to(dataObj.toSocketID).emit(Constants.ANSWER, dataObj.sessionDescription)
+    })
+
 })
 
 const removeStream = (streamObj) => {

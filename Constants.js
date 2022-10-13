@@ -15,7 +15,18 @@ const Constants = {
     END_STREAM:'end stream',
     JOIN_STREAM_REQUEST:'join stream request',
 
-    SEND_WEBRTC_CONNECTION_REQUEST:'Send request for webrtc connection',
+    WEBRTC_CONNECTION_REQUEST:'Send request for webrtc connection',
+    CANDIDATE:'candidate',
+    OFFER:'offer',
+    ANSWER:'answer',
+    MESSAGE:'message',
+    ICE_SERVERS: {
+        'iceServer': [
+            {'urls': 'stun:stun.services.mozilla.com'},
+            {'urls': 'stun:stun.l.google.com:19302'}
+        ]
+    },
+
 
     MESSAGE:'message'
 
