@@ -18,7 +18,8 @@ app.use(express.static('public'));
 let streams = []
 
 io.on('connection', (socket) => {
-
+    console.log('socket ID: ', socket.id)
+    socket.emit(Constants.SUCCESSFUL_CONNECTION, socket.id);
     /*
     Attempt to add new user, data comes in the form of:
         userObj:{
@@ -103,8 +104,11 @@ io.on('connection', (socket) => {
     */
     socket.on(Constants.JOIN_STREAM_REQUEST, (dataObj) => {
         console.log('Join Stream Reauest: ', dataObj)
-        if(userIsStreaming(dataObj.streamerUsername))
+        if(userIsStreaming(dataObj.streamerUsername)){
             socket.join(dataObj.streamerUsername)
+            socket.emit(Constants.JOIN_STREAM_RESULT, {didSucceed: true})
+        }
+        socket.emit(Constants.JOIN_STREAM_RESULT, {didSucceed: false})
     })
 
 
@@ -126,6 +130,24 @@ io.on('connection', (socket) => {
 
     /* 
     dataObj:{
+        streamerUsername: username of streamer,
+        socketID: socket id of sender
+    }
+    */
+    socket.on(Constants.WEBRTC_CONNECTION_REQUEST, (dataObj) => {
+        const stream = userIsStreaming(dataObj.streamerUsername);
+        console.log('Attempted webRTC connection: ', dataObj)
+        console.log('Streams: ', streams)
+
+        if(stream){
+            console.log('dummytest')
+            socket.join(stream.socketID);
+            socket.to(stream.socketID).emit(Constants.WEBRTC_CONNECTION_REQUEST, {socketID :dataObj.socketID});
+        }
+    })
+
+    /* 
+    dataObj:{
         candidateObj:{
             type: "candidate"
             label: sdpMLineIndex,
@@ -136,6 +158,8 @@ io.on('connection', (socket) => {
     }
     */
     socket.on(Constants.CANDIDATE, (dataObj) => {
+        console.log('Candidate: ', dataObj);
+        socket.join(dataObj.toSocketID);
         socket.to(dataObj.toSocketID).emit(Constants.CANDIDATE, dataObj.candidateObj)
     })
 
@@ -147,7 +171,9 @@ io.on('connection', (socket) => {
         ownSocketID: socket ID of self
     }
     */
-    socket.on(Constants.OFFER, (dataObj) => {
+    socket.on(Constants.OFFER, async (dataObj) => {
+        console.log('Offer', dataObj);
+        await socket.join(dataObj.toSocketID);
         socket.to(dataObj.toSocketID).emit(Constants.OFFER, {sessionDescription: dataObj.sessionDescription,
         toSocketID: dataObj.ownSocketID})
     })
@@ -161,6 +187,7 @@ io.on('connection', (socket) => {
     }
     */
     socket.on(Constants.ANSWER, (dataObj) => {
+        console.log('Answer:', dataObj);
         socket.to(dataObj.toSocketID).emit(Constants.ANSWER, dataObj.sessionDescription)
     })
 
@@ -176,9 +203,9 @@ const removeStream = (streamObj) => {
 
 const userIsStreaming = (username,) => {
     for(let streamObj of streams) {
-        if(streamObj.username == username) return true
+        if(streamObj.username == username) return streamObj
     }
-    return false
+    return null
 }
 
 httpServer.listen(Constants.PORT, () => {

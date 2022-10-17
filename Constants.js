@@ -2,9 +2,10 @@ const Constants = {
     PORT: 4005,
     CORS_METHODS: ["GET", "POST"],
     CORS_ORIGIN:'http://localhost:3000',
+    SUCCESSFUL_CONNECTION:'connection success',
+
     REGISTER_COMPLETE:'REGISTER_COMPLETE',
     DEFAULT_REGISTER_FAILURE:'This user already exists',
-
     GET_SALT:'get salt',
     SALT_COMPLETE:'salt complete',
     LOGIN_ATTEMPT:'login attempt',
@@ -14,6 +15,8 @@ const Constants = {
     START_STREAM:'start stream',
     END_STREAM:'end stream',
     JOIN_STREAM_REQUEST:'join stream request',
+    JOIN_STREAM_RESULT:'join stream result',
+
 
     WEBRTC_CONNECTION_REQUEST:'Send request for webrtc connection',
     CANDIDATE:'candidate',
