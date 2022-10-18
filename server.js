@@ -141,8 +141,10 @@ io.on('connection', (socket) => {
 
         if(stream){
             console.log('dummytest')
-            socket.join(stream.socketID);
-            socket.to(stream.socketID).emit(Constants.WEBRTC_CONNECTION_REQUEST, {socketID :dataObj.socketID});
+            const senderObj = {
+                socketID :dataObj.socketID
+            }
+            io.to(stream.socketID).emit(Constants.WEBRTC_CONNECTION_REQUEST, senderObj);
         }
     })
 
@@ -159,36 +161,34 @@ io.on('connection', (socket) => {
     */
     socket.on(Constants.CANDIDATE, (dataObj) => {
         console.log('Candidate: ', dataObj);
-        socket.join(dataObj.toSocketID);
-        socket.to(dataObj.toSocketID).emit(Constants.CANDIDATE, dataObj.candidateObj)
+        io.to(dataObj.toSocketID).emit(Constants.CANDIDATE, dataObj.candidateObj)
     })
 
     /*
     dataObj:{
         type: offer,
-        sessionDescription: session description of the streamers peer,
+        sdp: session description of the streamers peer,
         toSocketID: socket ID of user that joined the stream,
-        ownSocketID: socket ID of self
+        ownSocketID: socket ID of streamer
     }
     */
-    socket.on(Constants.OFFER, async (dataObj) => {
-        console.log('Offer', dataObj);
-        await socket.join(dataObj.toSocketID);
-        socket.to(dataObj.toSocketID).emit(Constants.OFFER, {sessionDescription: dataObj.sessionDescription,
+    socket.on(Constants.OFFER, (dataObj) => {
+        console.log('Offer', dataObj.toSocketID);
+        io.to(dataObj.toSocketID).emit(Constants.OFFER, {sdp: dataObj.sdp,
         toSocketID: dataObj.ownSocketID})
     })
 
     /*
     dataObj:{
         type: answer,
-        sessionDescription: session description of the streamers peer,
+        sdp: session description of the streamers peer,
         toSocketID: socket ID of user that joined the stream,
         ownSocketID: socket ID of self
     }
     */
     socket.on(Constants.ANSWER, (dataObj) => {
         console.log('Answer:', dataObj);
-        socket.to(dataObj.toSocketID).emit(Constants.ANSWER, dataObj.sessionDescription)
+        io.to(dataObj.toSocketID).emit(Constants.ANSWER, dataObj.sdp)
     })
 
 })
