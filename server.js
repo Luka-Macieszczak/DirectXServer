@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
 
     socket.on(Constants.END_STREAM, (streamObj) => {
         removeStream(streamObj)
-        console.log('Current streams: ', streams)
+        console.log('END STREAM: Current streams: ', streams)
     })
 
     /*
@@ -107,8 +107,8 @@ io.on('connection', (socket) => {
         if(userIsStreaming(dataObj.streamerUsername)){
             socket.join(dataObj.streamerUsername)
             socket.emit(Constants.JOIN_STREAM_RESULT, {didSucceed: true})
-        }
-        socket.emit(Constants.JOIN_STREAM_RESULT, {didSucceed: false})
+        } else 
+            socket.emit(Constants.JOIN_STREAM_RESULT, {didSucceed: false})
     })
 
 
@@ -182,13 +182,13 @@ io.on('connection', (socket) => {
     dataObj:{
         type: answer,
         sdp: session description of the streamers peer,
-        toSocketID: socket ID of user that joined the stream,
-        ownSocketID: socket ID of self
+        toSocketID: socket ID of streamer
+        ownSocketID: socket ID of viewer
     }
     */
     socket.on(Constants.ANSWER, (dataObj) => {
         console.log('Answer:', dataObj);
-        io.to(dataObj.toSocketID).emit(Constants.ANSWER, dataObj.sdp)
+        io.to(dataObj.toSocketID).emit(Constants.ANSWER, {sdp: dataObj.sdp, toSocketID: dataObj.toSocketID})
     })
 
 })
