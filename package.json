@@ -1,0 +1,25 @@
+{
+  "name": "webdevfinalserver",
+  "version": "1.0.0",
+  "description": "server for web dev final",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm start",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luka-Macieszczak/WebDevFinalServer.git"
+  },
+  "author": "Luka Macieszczak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luka-Macieszczak/WebDevFinalServer/issues"
+  },
+  "homepage": "https://github.com/Luka-Macieszczak/WebDevFinalServer#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^4.11.0",
+    "socket.io": "^4.5.3"
+  }
+}
