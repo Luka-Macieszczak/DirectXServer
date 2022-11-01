@@ -2,10 +2,12 @@ const express = require("express");
 const app = express();
 const Constants = require("./Constants");
 const httpServer = require("http").createServer();
+const getUser = require('./GetUser');
 const addUser = require('./AddUser');
 const getSalt = require('./GetSalt');
 const login = require('./Login');
 
+let streams = {}
 
 const io = require("socket.io")(httpServer,{
       cors: {
@@ -14,8 +16,6 @@ const io = require("socket.io")(httpServer,{
       }});
 
 app.use(express.static('public'));
-
-let streams = []
 
 io.on('connection', (socket) => {
     console.log('socket ID: ', socket.id)
@@ -82,12 +82,18 @@ io.on('connection', (socket) => {
     /*
     streamObj: {
         socketID: socket id of streamer,
-        username: username of streamer
+        username: username of streamer,
+        tags: tags of stream (i.e. gaming, educational... etc)
     }
     */
-    socket.on(Constants.START_STREAM, (streamObj) => {
-        streams.push(streamObj)
-        console.log('Current streams: ', streams)
+    socket.on(Constants.START_STREAM, async (streamObj) => {
+        streams[streamObj.username] = {
+            socketID: streamObj.socketID,
+            tags: streamObj.tags,
+            username: streamObj.username
+        }
+        io.emit(Constants.NEW_STREAM, ({stream: await getUser(streamObj.username)}))
+        console.log('Current streams TAGS: ', streamObj.tags)
     })
 
     socket.on(Constants.END_STREAM, (streamObj) => {
@@ -191,19 +197,35 @@ io.on('connection', (socket) => {
         io.to(dataObj.toSocketID).emit(Constants.ANSWER, {sdp: dataObj.sdp, toSocketID: dataObj.toSocketID})
     })
 
+    /*
+    dataObj:{
+        tag: tag of streams,
+    }
+    */
+    socket.on(Constants.REQUEST_STREAMS, async (dataObj) => {
+        const returnObj = {
+            streams: []
+        }
+        for(const stream of Object.keys(streams)){
+            console.log('Current tags: ', streams[stream].tags)
+            if(dataObj.tag in streams[stream].tags)
+                returnObj.streams.push(await getUser(stream))
+        }
+        console.log('STreams requested: ', returnObj)
+        socket.emit(Constants.REQUEST_STREAMS_ACK, (returnObj))
+    })
+
 })
 
 const removeStream = (streamObj) => {
-    if(streamObj) {
-        for(let i=0;i < streams.length; i++){
-            if(streams[i].socketID == streamObj.socketID) streams.pop(i);
-        }
+    if(streamObj.username in streams) {
+        delete streams[streamObj.username]
     }
 }
 
-const userIsStreaming = (username,) => {
-    for(let streamObj of streams) {
-        if(streamObj.username == username) return streamObj
+const userIsStreaming = (username) => {
+    if(username in streams) {
+        return streams[username]
     }
     return null
 }
