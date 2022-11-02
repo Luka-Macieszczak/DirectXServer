@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
             tags: streamObj.tags,
             username: streamObj.username
         }
-        io.emit(Constants.NEW_STREAM, ({stream: await getUser(streamObj.username)}))
+        io.emit(Constants.NEW_STREAM, ({stream: await getUser(streamObj.username), tags:streamObj.tags}))
         console.log('Current streams TAGS: ', streamObj.tags)
     })
 
@@ -206,10 +206,11 @@ io.on('connection', (socket) => {
         const returnObj = {
             streams: []
         }
+        console.log(dataObj)
         for(const stream of Object.keys(streams)){
-            console.log('Current tags: ', streams[stream].tags)
+            // console.log('Current tags: ', streams[stream].tags)
             if(dataObj.tag in streams[stream].tags)
-                returnObj.streams.push(await getUser(stream))
+                returnObj.streams.push({...await getUser(stream), tag:dataObj.tag})
         }
         console.log('STreams requested: ', returnObj)
         socket.emit(Constants.REQUEST_STREAMS_ACK, (returnObj))
