@@ -93,12 +93,20 @@ io.on('connection', (socket) => {
             username: streamObj.username
         }
         io.emit(Constants.NEW_STREAM, ({stream: await getUser(streamObj.username), tags:streamObj.tags}))
-        console.log('Current streams TAGS: ', streamObj.tags)
+        console.log('Current streams: ', streams)
     })
 
+    /*
+    streamObj: {
+        socketID: sessionID,
+        username: user.username,
+        tags: tags
+    }
+    */
     socket.on(Constants.END_STREAM, (streamObj) => {
         removeStream(streamObj)
         console.log('END STREAM: Current streams: ', streams)
+        io.emit(Constants.STREAM_ENDED, ({username: streamObj.username}))
     })
 
     /*

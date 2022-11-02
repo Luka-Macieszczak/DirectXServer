@@ -19,6 +19,7 @@ const Constants = {
     REQUEST_STREAMS:'request streams',
     REQUEST_STREAMS_ACK:'ackknowledge requested streams',
     NEW_STREAM:'new stream',
+    STREAM_ENDED: 'stream ended',
 
 
     WEBRTC_CONNECTION_REQUEST:'Send request for webrtc connection',
