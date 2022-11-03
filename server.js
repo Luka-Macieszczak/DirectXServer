@@ -6,6 +6,7 @@ const getUser = require('./GetUser');
 const addUser = require('./AddUser');
 const getSalt = require('./GetSalt');
 const login = require('./Login');
+const addSubscription = require('./AddSubscription');
 
 let streams = {}
 
@@ -226,6 +227,16 @@ io.on('connection', (socket) => {
         }
         console.log('STreams requested: ', returnObj)
         socket.emit(Constants.REQUEST_STREAMS_ACK, (returnObj))
+    })
+
+    /*
+    dataObj:{
+        username: username of subscriber,
+        streamerUsername: username of streamer being subscribed to
+    }
+    */
+    socket.on(Constants.NEW_SUBSCRIPTION, (dataObj) => {
+        addSubscription(dataObj)
     })
 
 })

@@ -21,6 +21,8 @@ const Constants = {
     NEW_STREAM:'new stream',
     STREAM_ENDED: 'stream ended',
 
+    NEW_SUBSCRIPTION:'new subscription',
+
 
     WEBRTC_CONNECTION_REQUEST:'Send request for webrtc connection',
     CANDIDATE:'candidate',
