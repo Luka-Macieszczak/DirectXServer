@@ -18,6 +18,8 @@ const io = require("socket.io")(httpServer,{
 
 app.use(express.static('public'));
 
+
+
 io.on('connection', (socket) => {
     console.log('socket ID: ', socket.id)
     socket.emit(Constants.SUCCESSFUL_CONNECTION, socket.id);
