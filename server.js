@@ -1,7 +1,13 @@
 const express = require("express");
 const app = express();
+const path = require('path');
+
+
 const Constants = require("./Constants");
-const httpServer = require("http").createServer();
+const httpServer = app.listen(Constants.PORT, () => {
+    console.log('Server listening on port: ', Constants.PORT)
+}) 
+//const httpServer = require("http").createServer();
 const getUser = require('./GetUser');
 const addUser = require('./AddUser');
 const getSalt = require('./GetSalt');
@@ -11,14 +17,19 @@ const addSubscription = require('./AddSubscription');
 let streams = {}
 
 const io = require("socket.io")(httpServer,{
-      cors: {
-        origin: Constants.CORS_ORIGIN,
-        methods: Constants.CORS_METHODS
-      }});
+    cors: {
+    origin: Constants.CORS_ORIGIN,
+    methods: Constants.CORS_METHODS
+}});
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'build')));
 
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+//app.use(express.static('public'));
 
 io.on('connection', (socket) => {
     console.log('socket ID: ', socket.id)
@@ -256,6 +267,8 @@ const userIsStreaming = (username) => {
     return null
 }
 
-httpServer.listen(Constants.PORT, () => {
+/*httpServer.listen(Constants.PORT, () => {
     console.log('server is listening on port ' + Constants.PORT);
-});
+});*/
+
+// app.listen(4001)

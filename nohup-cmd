@@ -1,0 +1,1 @@
+nohup node reactServer.js </dev/null&>/dev/null  &
