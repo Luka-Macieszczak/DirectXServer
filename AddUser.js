@@ -22,7 +22,7 @@ const addUser = async (userObj) => {
             email: userObj.email,
             salt: userObj.salt,
             subscriptions:[],
-            profilePic:''    
+            profilePic:'https://fomantic-ui.com/images/wireframe/white-image.png'    
         })
         console.log(result);
     }

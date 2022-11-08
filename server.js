@@ -1,28 +1,33 @@
 const express = require("express");
 const app = express();
 const path = require('path');
-
+var https = require('https');
+var http = require('http');
 
 const Constants = require("./Constants");
-const httpServer = app.listen(Constants.PORT, () => {
-    console.log('Server listening on port: ', Constants.PORT)
-}) 
+const httpsServer = http.createServer(app);
+
 //const httpServer = require("http").createServer();
 const getUser = require('./GetUser');
 const addUser = require('./AddUser');
 const getSalt = require('./GetSalt');
 const login = require('./Login');
 const addSubscription = require('./AddSubscription');
+const catchEm = require('./catchEm')
+const cors = require("cors")
+
+
 
 let streams = {}
 
-const io = require("socket.io")(httpServer,{
+const io = require("socket.io")(httpsServer,{
     cors: {
     origin: Constants.CORS_ORIGIN,
     methods: Constants.CORS_METHODS
 }});
 
 app.use(express.static(path.join(__dirname, 'build')));
+app.use(cors());
 
 
 app.get('/', (req, res) => {
@@ -54,7 +59,7 @@ io.on('connection', (socket) => {
                             username: userObj.username,
                             email:  userObj.email,
                             subscriptions:[],
-                            profilePic:''
+                            profilePic:'https://fomantic-ui.com/images/wireframe/white-image.png'
                         }
                         
                     }
@@ -267,6 +272,10 @@ const userIsStreaming = (username) => {
     return null
 }
 
+
+httpsServer.listen(Constants.PORT, () => {
+    console.log('Server listening on port: ', Constants.PORT)
+}) 
 /*httpServer.listen(Constants.PORT, () => {
     console.log('server is listening on port ' + Constants.PORT);
 });*/
