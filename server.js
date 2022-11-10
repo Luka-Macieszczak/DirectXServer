@@ -152,7 +152,8 @@ io.on('connection', (socket) => {
     messageObj:{
         message: text,
         username: username of sender,
-        streamerUsername: username of streamer, used as roomname
+        streamerUsername: username of streamer, used as roomname,
+        profilePic: profile pic of sender
     }
     */
     socket.on(Constants.MESSAGE, (messageObj) => {
@@ -160,7 +161,8 @@ io.on('connection', (socket) => {
         // Send message to room belonging to streamer
         socket.to(messageObj.streamerUsername).emit(Constants.MESSAGE, ({
             username: messageObj.username,
-            message: messageObj.message
+            message: messageObj.message,
+            profilePic: messageObj.profilePic
         }))
     })
 
