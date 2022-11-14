@@ -38,6 +38,12 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('socket ID: ', socket.id)
+
+    socket.on("disconnect", (reason) => {
+        console.log('Socket disconnect: ', reason)
+        removeStreamByID(socket.id)
+    });
+
     socket.emit(Constants.SUCCESSFUL_CONNECTION, socket.id);
     /*
     Attempt to add new user, data comes in the form of:
@@ -261,17 +267,32 @@ io.on('connection', (socket) => {
 
 })
 
+
+// Remove a stream by username
+// Would occur if a streamer ends their stream but stays connected
 const removeStream = (streamObj) => {
     if(streamObj.username in streams) {
         delete streams[streamObj.username]
     }
 }
 
+// Check if a user is streaming by username
 const userIsStreaming = (username) => {
     if(username in streams) {
         return streams[username]
     }
     return null
+}
+
+// Delete stream by socketID on disconnect
+const removeStreamByID = (ID) => {
+    for(const stream of Object.keys(streams)){
+        if(streams[stream].socketID === ID){
+            console.log('ending stream: ', streams[stream])
+            delete streams[stream]
+            console.log('Streams: ', streams)
+        }
+    }
 }
 
 
