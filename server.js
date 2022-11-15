@@ -41,7 +41,10 @@ io.on('connection', (socket) => {
 
     socket.on("disconnect", (reason) => {
         console.log('Socket disconnect: ', reason)
-        removeStreamByID(socket.id)
+        const removed = removeStreamByID(socket.id)
+        if(removed) {
+            io.emit(Constants.STREAM_ENDED, ({username: removed.username}))
+        }
     });
 
     socket.emit(Constants.SUCCESSFUL_CONNECTION, socket.id);
@@ -286,13 +289,16 @@ const userIsStreaming = (username) => {
 
 // Delete stream by socketID on disconnect
 const removeStreamByID = (ID) => {
+    let ret = null
     for(const stream of Object.keys(streams)){
         if(streams[stream].socketID === ID){
             console.log('ending stream: ', streams[stream])
+            ret = streams[stream]
             delete streams[stream]
             console.log('Streams: ', streams)
         }
     }
+    return ret;
 }
 
 
