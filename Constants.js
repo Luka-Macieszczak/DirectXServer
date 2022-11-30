@@ -1,7 +1,7 @@
 const Constants = {
     PORT: 4005,
     CORS_METHODS: ["GET", "POST"],
-    CORS_ORIGIN:'http://127.0.0.1:8080',
+    CORS_ORIGIN:'http://localhost:3000',
     SUCCESSFUL_CONNECTION:'connection success',
 
     REGISTER_COMPLETE:'REGISTER_COMPLETE',
