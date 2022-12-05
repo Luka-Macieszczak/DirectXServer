@@ -25,6 +25,6 @@ The server keeps track of all active streams in an array. The array stores objec
 * Listen to stream ended events, and when one is received, broadcast to all clients which stream just ended.
 * Listen to viewers attempting to join streams. When an attempt is made, check if the stream is still active and emit the result. If it is successful, join that streams chat room.
 * Each stream has a chatroom, the roomname is the streamers username, and all incoming messages are emitted to everyone watching that stream.
-
+* **
 ## Subscriptions
 Users can subscribe to streamers. When they do so, the streamers username is added into the set of subscriptions in the database. On the client side, users will see whenever one of the streamers they subscribed to is currently live.

@@ -22,7 +22,8 @@ const addUser = async (userObj) => {
             email: userObj.email,
             salt: userObj.salt,
             subscriptions:[],
-            profilePic:'https://fomantic-ui.com/images/wireframe/white-image.png'    
+            profilePic:'https://fomantic-ui.com/images/wireframe/white-image.png',
+            authorization: 'default'    
         })
         console.log(result);
     }

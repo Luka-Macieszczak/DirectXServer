@@ -68,7 +68,8 @@ io.on('connection', (socket) => {
                             username: userObj.username,
                             email:  userObj.email,
                             subscriptions:[],
-                            profilePic:'https://fomantic-ui.com/images/wireframe/white-image.png'
+                            profilePic:'https://fomantic-ui.com/images/wireframe/white-image.png',
+                            authorization: 'default'
                         }
                         
                     }
@@ -122,6 +123,8 @@ io.on('connection', (socket) => {
             username: streamObj.username,
             description: streamObj.description
         }
+        socket.join(streamObj.username)
+
         io.emit(Constants.NEW_STREAM, ({stream: await getUser(streamObj.username), tags:streamObj.tags,
             description: streamObj.description}))
         console.log('Current streams: ', streams)

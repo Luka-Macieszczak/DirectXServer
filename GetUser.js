@@ -13,7 +13,7 @@ const GetUser = async (username) => {
     const collection = db.collection('Users');
 
     let user = await collection.find({username: username}, {$exists: true}).next()
-    if (user != null) return {username: user.username, profilePic: user.profilePic}
+    if (user != null) return {username: user.username, profilePic: user.profilePic, authorization: user.authorization}
 }
 
 module.exports = GetUser;
