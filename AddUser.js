@@ -12,7 +12,9 @@ const addUser = async (userObj) => {
 
     const db = client.db(dbName);
     const collection = db.collection('Users');
-    const userExists = await collection.find({username: userObj.username}, {$exists: true}).next() != null
+    let userExists = await collection.find({username: userObj.username}, {$exists: true}).next() != null
+    userExists = await collection.find({email: userObj.email}, {$exists: true}).next() != null
+
     let result;
 
     if(!userExists){

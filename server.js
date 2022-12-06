@@ -15,8 +15,8 @@ const login = require('./Login');
 const addSubscription = require('./AddSubscription');
 const catchEm = require('./catchEm')
 const cors = require("cors")
-
-
+const removeUser = require('./RemoveUser');
+const getAllUsers = require('./GetAllUsers');
 
 let streams = {}
 
@@ -269,6 +269,25 @@ io.on('connection', (socket) => {
     */
     socket.on(Constants.NEW_SUBSCRIPTION, (dataObj) => {
         addSubscription(dataObj)
+    })
+
+    socket.on(Constants.GET_ALL_USERS, async () => {
+        console.log("ALL Users: ", await getAllUsers())
+        socket.emit(Constants.GET_ALL_USERS_ACK, await getAllUsers())
+    })
+
+    /*
+    user = {
+            username: ***,
+            email: ***,
+            profilePic: ***,
+            authorization: ***,
+            subscriptions: [***...]
+        }
+     */
+    socket.on(Constants.REMOVE_USER, async (user) => {
+        removeUser(user)
+        socket.emit(Constants.GET_ALL_USERS_ACK, await getAllUsers())
     })
 
 })

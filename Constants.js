@@ -56,7 +56,11 @@ const Constants = {
       },
       ROOT_DIR: 'build',
 
-      CLOUDFLARE_URL: 'https://api.cloudflare.com/client/v4/accounts/3519f19ef060a572ceb4b78750ff7e49/images/v1'
+      CLOUDFLARE_URL: 'https://api.cloudflare.com/client/v4/accounts/3519f19ef060a572ceb4b78750ff7e49/images/v1',
+
+      GET_ALL_USERS: 'get all users',
+      GET_ALL_USERS_ACK: 'get all users ackknowledged',
+      REMOVE_USER: 'remove user'
 
 
 }
