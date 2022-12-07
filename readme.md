@@ -1,4 +1,4 @@
-# Web Dev Final Server
+# DirectX Server
 ### Handle user authentication, WebRTC connections, active streams, subscriptions and messaging.
 ### [DirectX.Live](https://directx.live)
 
